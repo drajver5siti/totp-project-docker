@@ -1,0 +1,44 @@
+version: '3'
+
+networks:
+    internal:
+        driver: bridge
+
+volumes:
+    mysqldata: {}
+
+services:
+    nginx:
+        container_name: ib-proekt-nginx
+        build: ./docker/nginx
+        restart: always
+        ports:
+            - "8080:80"
+            - "443:443"
+        networks:
+            - internal
+        volumes:
+            - "./docker/nginx/ib-proekt.com.conf:/etc/nginx/conf.d/default.conf:ro"
+            - "./app:/var/www/ib-proekt.com"
+
+    php:
+        container_name: ib-proekt-php
+        build: ./docker/php
+        restart: always
+        networks:
+            - internal
+        volumes:
+            - "./app:/var/www/ib-proekt.com"
+
+    mysql:
+        image: mariadb:latest
+        restart: always
+        environment:
+            - MARIADB_DATABASE=ibproekt
+            - MARIADB_ROOT_PASSWORD_HASH=*E4AC4150AA7941E1CEA8380831B29A6512A55948
+        ports:
+            - "3306:3306"
+        networks:
+            - internal
+        volumes:
+            - "mysqldata:/var/lib/mysql"
