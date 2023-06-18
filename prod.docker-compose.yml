@@ -5,7 +5,6 @@ networks:
         driver: bridge
 
 volumes:
-    totp: {}
     mysqldata: {}
 
 services:
@@ -29,8 +28,6 @@ services:
         restart: always
         networks:
             - internal
-        volumes:
-            - "totp:/var/www/ib-proekt.com:ro"
         depends_on:
             - mysql
 
@@ -43,8 +40,6 @@ services:
             - "443:443"
         networks:
             - internal
-        volumes:
-            - "totp:/var/www/ib-proekt.com:ro"
         depends_on:
             - php
     
