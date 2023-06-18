@@ -1,0 +1,51 @@
+version: '3'
+
+networks:
+    internal:
+        driver: bridge
+
+volumes:
+    totp: {}
+    mysqldata: {}
+
+services:
+    mysql:
+        container_name: ib-proekt-mariadb
+        image: mariadb:latest
+        restart: always
+        environment:
+            - MARIADB_DATABASE=ibproekt
+            - MARIADB_ROOT_PASSWORD_HASH=*E4AC4150AA7941E1CEA8380831B29A6512A55948name=value
+        ports:
+            - "3306:3306"
+        networks:
+            - internal
+        volumes:
+            - "mysqldata:/var/lib/mysql"
+
+    php:
+        container_name: ib-proekt-php
+        image: drajver5siti/totp-php:latest
+        restart: always
+        networks:
+            - internal
+        volumes:
+            - "totp:/var/www/ib-proekt.com:ro"
+        depends_on:
+            - mysql
+
+    nginx:
+        container_name: ib-proekt-nginx
+        image: drajver5siti/totp-nginx:latest
+        restart: always
+        ports: 
+            - "80:80"
+            - "443:443"
+        networks:
+            - internal
+        volumes:
+            - "totp:/var/www/ib-proekt.com:ro"
+        depends_on:
+            - php
+    
+  
