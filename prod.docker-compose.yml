@@ -26,6 +26,11 @@ services:
         container_name: ib-proekt-php
         image: drajver5siti/totp-php:latest
         restart: always
+        environment:
+            - MARIADB_HOST=mysql
+            - MARIADB_USER=root
+            - MARIADB_PASSWORD=ibproekt
+            - MARIADB_DATABASE=ibproekt
         networks:
             - internal
         depends_on:
